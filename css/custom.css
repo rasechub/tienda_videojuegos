@@ -1,0 +1,220 @@
+/* ==============================================================
+   XioNox Store - Custom Gaming UI Styles
+   ============================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap');
+
+:root {
+    --bg-dark: #0a0d14;
+    --bg-surface: #121826;
+    --bg-surface-elevated: #1a2234;
+    --primary-cyan: #00f2fe;
+    --primary-blue: #4facfe;
+    --accent-purple: #7928ca;
+    --accent-pink: #ff0080;
+    --neon-glow: 0 0 15px rgba(0, 242, 254, 0.4);
+    --neon-purple-glow: 0 0 15px rgba(121, 40, 202, 0.4);
+    --border-color: rgba(255, 255, 255, 0.08);
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: #e2e8f0;
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Navbar */
+.navbar-xionox {
+    background: rgba(10, 13, 20, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    transition: all 0.3s ease;
+}
+
+.brand-logo {
+    background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-blue) 50%, var(--accent-purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* Glassmorphism Cards */
+.card-gaming {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card-gaming:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 242, 254, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), var(--neon-glow);
+}
+
+.game-img-wrapper {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    background: #0f131c;
+}
+
+.game-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.card-gaming:hover .game-img-wrapper img {
+    transform: scale(1.08);
+}
+
+.game-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    backdrop-filter: blur(8px);
+}
+
+/* Botones Gamer */
+.btn-neon {
+    background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-blue) 100%);
+    color: #050811 !important;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.4rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.25);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-neon:hover {
+    box-shadow: var(--neon-glow);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.btn-outline-neon {
+    color: var(--primary-cyan) !important;
+    border: 1px solid var(--primary-cyan);
+    background: transparent;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+}
+
+.btn-outline-neon:hover {
+    background: rgba(0, 242, 254, 0.12);
+    box-shadow: var(--neon-glow);
+    transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-banner {
+    position: relative;
+    padding: 4rem 1.5rem;
+    background: radial-gradient(circle at 50% 20%, rgba(79, 172, 254, 0.15) 0%, transparent 70%),
+                linear-gradient(180deg, rgba(18, 24, 38, 0.8) 0%, rgba(10, 13, 20, 1) 100%);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 3rem;
+    overflow: hidden;
+}
+
+/* Tablas con diseño gaming */
+.table-gaming {
+    --bs-table-bg: transparent;
+    --bs-table-color: #e2e8f0;
+    --bs-table-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.table-gaming thead th {
+    background-color: var(--bg-surface-elevated);
+    color: var(--primary-cyan);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(0, 242, 254, 0.3);
+}
+
+.table-gaming tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-gaming tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Formularios */
+.form-gaming-input {
+    background-color: #0d121c !important;
+    border: 1px solid var(--border-color) !important;
+    color: #f1f5f9 !important;
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-gaming-input:focus {
+    border-color: var(--primary-cyan) !important;
+    box-shadow: 0 0 0 0.25rem rgba(0, 242, 254, 0.2) !important;
+}
+
+.form-gaming-input::placeholder {
+    color: #64748b;
+}
+
+/* Badges */
+.badge-stock {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    font-weight: 600;
+}
+
+.badge-nostock {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    font-weight: 600;
+}
+
+.badge-admin {
+    background: rgba(217, 70, 239, 0.2);
+    color: #f472b6;
+    border: 1px solid rgba(244, 114, 182, 0.4);
+}
+
+.badge-cliente {
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+/* Carrito Floating Counter */
+.cart-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50rem;
+    transform: translate(-30%, -30%);
+}

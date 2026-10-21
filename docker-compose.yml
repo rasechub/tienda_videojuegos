@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Servicio Web: PHP Apache con extensiones PDO MySQL
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xionox_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: xionox_store
+      DB_USER: xionox_user
+      DB_PASS: xionox_password
+    depends_on:
+      - db
+    networks:
+      - xionox_network
+
+  # Servicio de Base de Datos: MySQL 8.0
+  db:
+    image: mysql:8.0
+    container_name: xionox_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_123
+      MYSQL_DATABASE: xionox_store
+      MYSQL_USER: xionox_user
+      MYSQL_PASSWORD: xionox_password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+    networks:
+      - xionox_network
+
+networks:
+  xionox_network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
