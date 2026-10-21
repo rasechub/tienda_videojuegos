@@ -1,133 +1,135 @@
-# 🎮 XioNox Store - Sistema Web de Catálogo y Pedidos
+# XioNox Store - Sistema Web de Catálogo y Pedidos
 
-Bienvenido al repositorio de **XioNox Store**, una plataforma web completa de comercio electrónico y gestión de pedidos de videojuegos, desarrollada con **PHP Nativo**, **MySQL 8.0**, **Docker** y **Bootstrap 5**.
+Plataforma web transaccional de comercio electrónico especializada en la gestión y venta de videojuegos. Desarrollada bajo una arquitectura basada en contenedores utilizando PHP nativo, MySQL 8.0 y Bootstrap 5.
 
 ---
 
-## 🚀 Stack Tecnológico
+## Stack Tecnológico
 
-- **Entorno:** Docker & Docker Compose
-- **Backend:** PHP 8.2 Nativo (Sin frameworks) con Apache
+- **Entorno de Ejecución:** Docker & Docker Compose
+- **Backend:** PHP 8.2 Nativo (Servidor Apache)
 - **Base de Datos:** MySQL 8.0
-- **Frontend:** Bootstrap 5.3.3 (CDN), Bootstrap Icons y estilos personalizados para estética Gamer / Neón
-- **Seguridad:**
-  - Conexión centralizada mediante **PDO** con **Prepared Statements** contra Inyecciones SQL.
-  - Encriptación de contraseñas con `password_hash()` (algoritmo BCRYPT).
-  - Verificación estricta en inicio de sesión con `password_verify()`.
-  - Regeneración de ID de sesión (`session_regenerate_id(true)`) para prevenir Session Fixation.
+- **Frontend:** Bootstrap 5.3.3, Bootstrap Icons y hojas de estilo personalizadas.
+- **Seguridad y Criptografía:**
+  - Prevención de Inyecciones SQL mediante **PDO** y **Prepared Statements**.
+  - Hasheo de credenciales con el algoritmo **BCRYPT** (`password_hash()`).
+  - Validación de autenticación estricta (`password_verify()`).
+  - Mitigación de ataques de fijación de sesión mediante regeneración de identificadores (`session_regenerate_id(true)`).
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```text
 tienda_videojuegos/
-├── Dockerfile              # Configuración de PHP 8.2 Apache con extensiones pdo y pdo_mysql
-├── docker-compose.yml      # Orquestación de servicios: web (puerto 8080) y db (MySQL)
-├── init.sql                # Script de creación de tablas y seeders iniciales
-├── conexion.php            # Conexión centralizada PDO con manejo de errores y variables de entorno
-├── index.php               # Catálogo público, búsqueda y agregar productos al carrito
-├── carrito.php             # Vista del carrito, control de cantidades, cálculo y checkout transaccional
-├── login.php               # Autenticación segura con verificación de hash
-├── register.php            # Registro de nuevos clientes con encriptación de contraseña
-├── logout.php              # Destrucción segura de sesión
-├── dashboard.php           # Panel privado: Historial para Clientes y CRUD + Pedidos para Administradores
+├── Dockerfile              # Configuración de imagen PHP 8.2 Apache con extensiones PDO
+├── docker-compose.yml      # Orquestación de contenedores web (puerto 8080) y db (MySQL)
+├── init.sql                # DDL para creación de esquema y DML para inserción de datos semilla
+├── conexion.php            # Patrón Singleton/Script de conexión PDO con manejo de variables de entorno
+├── index.php               # Controlador principal, catálogo público y motor de búsqueda
+├── carrito.php             # Gestión de sesión de compras, cálculo de importes y checkout
+├── login.php               # Módulo de autenticación
+├── register.php            # Módulo de registro de usuarios
+├── logout.php              # Cierre seguro de sesión
+├── dashboard.php           # Panel de administración (CRUD) y portal de cliente (Historial)
 ├── includes/
-│   ├── header.php          # Meta tags, fuentes de Google, Bootstrap 5 CSS y Bootstrap Icons
-│   ├── navbar.php          # Barra de navegación responsiva con contador dinámico de carrito y roles
-│   └── footer.php          # Pie de página y scripts de Bootstrap 5 Bundle JS
+│   ├── header.php          # Configuración de cabeceras, metaetiquetas y carga de dependencias CSS
+│   ├── navbar.php          # Componente de navegación responsivo con control de estado de sesión
+│   └── footer.php          # Pie de página y carga de scripts (Bootstrap Bundle)
 ├── css/
-│   └── custom.css          # Estilos gaming personalizados con colores oscuros y acentos neón
-└── README.md               # Documentación completa del proyecto
+│   └── custom.css          # Estilos de interfaz gráfica
+└── README.md               # Documentación técnica del proyecto
 ```
 
 ---
 
-## 🗄️ Estructura de Base de Datos (`init.sql`)
+## Esquema de Base de Datos (`init.sql`)
+
+El sistema opera sobre cuatro entidades principales relacionadas relacionalmente:
 
 1. **`usuarios`**:
-   - `id`: INT AUTO_INCREMENT PRIMARY KEY
-   - `nombre`: VARCHAR(100)
-   - `email`: VARCHAR(150) UNIQUE
-   - `password`: VARCHAR(255) *(Hash BCRYPT)*
-   - `rol`: ENUM('admin', 'cliente')
-   - `creado_en`: TIMESTAMP
+   - `id` (INT, PK, AUTO_INCREMENT)
+   - `nombre` (VARCHAR 100)
+   - `email` (VARCHAR 150, UNIQUE)
+   - `password` (VARCHAR 255)
+   - `rol` (ENUM: 'admin', 'cliente')
+   - `creado_en` (TIMESTAMP)
 
 2. **`productos`**:
-   - `id`: INT AUTO_INCREMENT PRIMARY KEY
-   - `titulo`: VARCHAR(200)
-   - `descripcion`: TEXT
-   - `precio`: DECIMAL(10,2)
-   - `stock`: INT
-   - `imagen_url`: VARCHAR(500)
-   - `creado_en`: TIMESTAMP
+   - `id` (INT, PK, AUTO_INCREMENT)
+   - `titulo` (VARCHAR 200)
+   - `descripcion` (TEXT)
+   - `precio` (DECIMAL 10,2)
+   - `stock` (INT)
+   - `imagen_url` (VARCHAR 500)
+   - `creado_en` (TIMESTAMP)
 
 3. **`pedidos`**:
-   - `id`: INT AUTO_INCREMENT PRIMARY KEY
-   - `usuario_id`: INT *(FK hacia usuarios.id)*
-   - `fecha`: DATETIME
-   - `total`: DECIMAL(10,2)
-   - `estado`: ENUM('Pendiente', 'Completado')
+   - `id` (INT, PK, AUTO_INCREMENT)
+   - `usuario_id` (INT, FK -> usuarios.id)
+   - `fecha` (DATETIME)
+   - `total` (DECIMAL 10,2)
+   - `estado` (ENUM: 'Pendiente', 'Completado')
 
 4. **`pedido_detalle`**:
-   - `id`: INT AUTO_INCREMENT PRIMARY KEY
-   - `pedido_id`: INT *(FK hacia pedidos.id)*
-   - `producto_id`: INT *(FK hacia productos.id)*
-   - `cantidad`: INT
-   - `precio_unitario`: DECIMAL(10,2)
+   - `id` (INT, PK, AUTO_INCREMENT)
+   - `pedido_id` (INT, FK -> pedidos.id)
+   - `producto_id` (INT, FK -> productos.id)
+   - `cantidad` (INT)
+   - `precio_unitario` (DECIMAL 10,2)
 
 ---
 
-## 🔑 Credenciales de Acceso Iniciales (Seeders)
+## Credenciales de Acceso Iniciales (Seeders)
 
-| Rol | Correo Electrónico | Contraseña | Descripción |
+Los siguientes accesos se generan automáticamente al inicializar la base de datos para pruebas en entornos de desarrollo:
+
+| Perfil de Usuario | Correo Electrónico | Contraseña | Nivel de Acceso |
 | :--- | :--- | :--- | :--- |
-| **Administrador** | `admin@xionox.local` | `admin` | Acceso al CRUD de videojuegos y gestión de pedidos |
-| **Cliente Demo** | `cliente@xionox.local` | `123456` | Acceso a compras y su historial personal |
+| **Administrador** | `admin@xionox.local` | `admin` | Control total: CRUD del catálogo y gestión de estados de pedidos. |
+| **Cliente Demo** | `cliente@xionox.local` | `123456` | Acceso estándar: Proceso de compra y visualización de historial. |
 
 ---
 
-## 🛠️ Instrucciones de Despliegue con Docker
+## Instrucciones de Despliegue
 
-### 1. Iniciar los contenedores
-Ejecuta en la raíz del proyecto:
+### 1. Inicialización de Contenedores
+Para construir y levantar la infraestructura en segundo plano, ejecute el siguiente comando en el directorio raíz:
 ```bash
 docker compose up -d --build
 ```
 
-### 2. Acceder al sistema
-Abre tu navegador e ingresa a:
-👉 **[http://localhost:8080](http://localhost:8080)**
+### 2. Acceso a la Plataforma
+Una vez que los servicios estén activos, la aplicación estará disponible en:
+[http://localhost:8080](http://localhost:8080)
 
-### 3. Detener los contenedores
-Cuando desees detener el entorno:
+### 3. Detención de Servicios
+Para detener y suspender el entorno de contenedores de forma segura:
 ```bash
 docker compose down
 ```
 
 ---
 
-## 🕹️ Funcionalidades Principales
+## Funcionalidades Principales
 
-1. **Catálogo Dinámico (`index.php`)**:
-   - Listado de videojuegos con stock en tiempo real y buscador integrado.
-   - Cards modernas con efecto hover, badges de disponibilidad y precios en USD.
-   - Botón interactivo "Agregar al Carrito" que almacena los datos en `$_SESSION['carrito']`.
+### Catálogo de Productos y Navegación (`index.php`)
+- Renderizado dinámico del inventario con validación de stock en tiempo real.
+- Motor de búsqueda integrado para filtrado rápido de títulos.
+- Interfaz gráfica basada en tarjetas (Cards) con indicadores de disponibilidad y estructuración de precios.
 
-2. **Carrito de Compras y Checkout (`carrito.php`)**:
-   - Visualización de items seleccionados, imágenes en miniatura y desglose de subtotales.
-   - Controles para aumentar o disminuir cantidades con validación automática de inventario.
-   - Opción para eliminar items individuales o vaciar el carrito por completo.
-   - **Checkout Transaccional**: Si el usuario está autenticado, registra el pedido en `pedidos` y su desglose en `pedido_detalle`, descuenta el inventario de la base de datos dentro de una transacción `beginTransaction()` / `commit()` para garantizar atomicidad.
+### Motor de Compras y Checkout (`carrito.php`)
+- Gestión temporal de artículos mediante superglobales de sesión (`$_SESSION['carrito']`).
+- Controles de incremento y decremento de unidades limitados por el inventario disponible en base de datos.
+- **Transacciones ACID:** El proceso de checkout emplea `beginTransaction()` y `commit()` para asegurar que la deducción de inventario, el registro del pedido general y el desglose de artículos se ejecuten como una única operación atómica.
 
-3. **Autenticación Segura (`login.php`, `register.php`, `logout.php`)**:
-   - Formularios estilizados con validación de entradas y mensajes de alerta.
-   - Registro de usuarios con contraseña encriptada mediante `password_hash(..., PASSWORD_DEFAULT)`.
-   - Inicio de sesión con verificación de hash mediante `password_verify(...)`.
+### Gestión de Identidad y Accesos
+- Procesamiento seguro de formularios con validación de datos en servidor.
+- Rutinas de registro e inicio de sesión protegidas mediante algoritmos de derivación de claves estándar de la industria.
 
-4. **Panel de Control Privado (`dashboard.php`)**:
-   - **Vista Cliente:** Historial de compras con fecha, monto, estado (Pendiente / Completado) y modal interactivo para consultar los videojuegos comprados en cada orden.
-   - **Vista Administrador:**
-     - Tarjetas de estadísticas (Total de Pedidos, Facturación global, Títulos en Catálogo, Clientes).
-     - **CRUD de Videojuegos:** Modal para agregar títulos, actualización rápida de stock, edición de precios/descripción y eliminación.
-     - **Control de Pedidos:** Tabla de todas las órdenes de la tienda con selector para actualizar su estado (`Pendiente` ➔ `Completado`) y ver el desglose de productos.
+### Panel de Control Híbrido (`dashboard.php`)
+- **Portal de Cliente:** Tabla histórica de transacciones con visualización de estado y modales de consulta detallada por orden.
+- **Portal Administrativo:** 
+  - Panel de métricas e indicadores de rendimiento (KPIs) del negocio.
+  - Interfaz completa para la gestión de inventario (Creación, lectura, actualización y eliminación de productos).
+  - Gestor de despachos para visualizar y transicionar el ciclo de vida de los pedidos (de `Pendiente` a `Completado`).
